@@ -1,15 +1,16 @@
 import 'dotenv/config';
 import express,{Request,Response} from 'express';
 import colors from 'colors';
+import { authRouter } from './Routes/AuthenticationRoutes.js';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const address = "/api/v1";
 
 
 
-
-
-
+// AUTHENTICATION ROUTE 
+app.use(`${address}/auth`, authRouter);
 
 // TEST ROUTE
 app.get('/test', (req:Request, res:Response) => {

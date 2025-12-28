@@ -19,6 +19,7 @@ const AuthenticationMiddleware = (req: Request, res: Response, next: NextFunctio
                 // INVALID TOKEN
                 return ErrorHandler('Unauthorized access', err as Error, res, 401);
             }
+            // TOKEN IS VALID
             const payload = decoded as jwt.JwtPayload;
 
                     // ATTACH DECODED PAYLOAD TO REQUEST OBJECT
