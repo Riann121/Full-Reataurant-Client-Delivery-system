@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import express,{Request,Response} from 'express';
 import colors from 'colors';
 
@@ -12,7 +13,8 @@ const PORT = process.env.PORT || 3000;
 
 // TEST ROUTE
 app.get('/test', (req:Request, res:Response) => {
-  res.send(colors.bgBlue('test route is working perfectly'));
+  res.json({message: 'Test route is working'});
+  console.log(colors.white.bgBlue('Test route is working'));
 });
 
 app.listen(PORT, () => {
