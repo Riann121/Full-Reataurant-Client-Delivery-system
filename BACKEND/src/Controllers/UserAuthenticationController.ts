@@ -3,6 +3,7 @@ import colors from 'colors';
 import prisma from '../Config/prisma.js';
 import bcrypt from 'bcrypt';
 import verify_n_jwtProvide from '../Utils/verify-n-jwt.js';
+import { ErrorHandler } from '../Utils/customErrorHandler.js';
 
 //REGISTRATION CONTROLLER
 const registrationController = async (req: Request, res: Response) => {
@@ -16,9 +17,7 @@ const registrationController = async (req: Request, res: Response) => {
             bcrypt.hash (password, salt, async (err:Error | undefined, hash:string) => {
                 if (err) {
                     //HANDLE HASHING ERROR
-                    console.error('Error hashing password:', err);
-                    console.log(colors.bgMagenta("custom error message here"));
-                    return res.status(500).json({ message: 'Internal server error' });
+                    ErrorHandler('Error hashing password', err, res, 500);
                 }   
                 else {
                     try { 
@@ -37,17 +36,13 @@ const registrationController = async (req: Request, res: Response) => {
 
                     } catch (error) {
                         //HANDLE USER CREATION ERROR
-                        console.error('Error creating user:', error);
-                        console.log(colors.bgMagenta("custom error message here"));
-                        return res.status(500).json({ message: 'Internal server error' });
+                        ErrorHandler('Error creating user', error as Error, res, 500);
                     }
                 }
         })
     } catch (error) {
         //HANDLE GENERAL ERROR
-        console.error('Registration error:', error);
-        console.log(colors.bgMagenta("custom error message here"));
-        res.status(500).json({ message: 'Internal server error' });
+        ErrorHandler('Registration error', error as Error, res, 500);
     }
 }
 
@@ -70,9 +65,8 @@ const loginController = async (req: Request, res: Response) => {
         verify_n_jwtProvide(password, user, res);
 
     } catch (error) {
-        console.error('Login error:', error);
-        console.log(colors.bgMagenta("custom error message here"));
-        res.status(500).json({ message: 'Internal server error' });
+        //HANDLE GENERAL ERROR
+        ErrorHandler('Login error', error as Error, res, 500);
     }
 }
 export { registrationController, loginController };

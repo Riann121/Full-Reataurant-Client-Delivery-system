@@ -15,6 +15,4 @@ const ErrorHandler = (msg:string, err:Error,  res:Response, status:number)=>{
     })
 }
 
-
-
 export { ErrorHandler };
