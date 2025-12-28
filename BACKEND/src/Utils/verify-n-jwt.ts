@@ -2,9 +2,12 @@ import bcrypt from 'bcrypt';
 import { Response } from 'express';
 import jwt from 'jsonwebtoken';
 import colors from 'colors';
+import { PrismaClient } from '@prisma/client/extension';
+
 import 'dotenv/config';
 
-const verify_n_jwtProvide = async(password:string, user:any, res:Response)=>{
+
+const verify_n_jwtProvide = async(password:string, user:PrismaClient, res:Response)=>{
     try {
         const result  = await bcrypt.compare(password, user.passhash);
             if (result) {

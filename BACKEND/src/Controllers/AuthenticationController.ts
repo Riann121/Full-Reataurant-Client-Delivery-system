@@ -2,7 +2,6 @@ import { Request, Response } from 'express';
 import colors from 'colors';
 import prisma from '../Config/prisma.js';
 import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
 import verify_n_jwtProvide from '../Utils/verify-n-jwt.js';
 
 //REGISTRATION CONTROLLER
