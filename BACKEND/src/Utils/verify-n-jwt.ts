@@ -5,6 +5,7 @@ import colors from 'colors';
 import { PrismaClient } from '@prisma/client/extension';
 
 import 'dotenv/config';
+import { ErrorHandler } from './customErrorHandler.js';
 
 
 const verify_n_jwtProvide = async(password:string, user:PrismaClient, res:Response)=>{
@@ -16,13 +17,11 @@ const verify_n_jwtProvide = async(password:string, user:PrismaClient, res:Respon
                 //GENERATE JWT TOKEN
                 const secretKey = process.env.JWT_SECRET;
                 if (!secretKey) {
-                    console.error('JWT secret key is not defined in environment variables');
-                    console.log(colors.bgMagenta("custom error message here"));
-                    return res.status(500).json({ message: 'Internal server error' });
+                    return ErrorHandler('JWT secret key not found', new Error('Missing JWT secret'), res, 500);
                 }
                 //SIGNING THE TOKEN
                 const token = jwt.sign(
-                    { userId: user.id, role: user.Role },
+                    { userId: user.id, role: user.role },
                     secretKey, { expiresIn: '24h' });
 
                 res.status(200).json({ message: 'Login successful', token });
@@ -33,9 +32,7 @@ const verify_n_jwtProvide = async(password:string, user:PrismaClient, res:Respon
             }
     } catch (error) {
         //HANDLE ERROR DURING AUTHENTICATION
-        console.error('Error during authentication:', error);
-        console.log(colors.bgMagenta("custom error message here"));
-        res.status(500).json({ message: 'Internal server error' });
+        ErrorHandler('Error during authentication', error as Error, res, 500);
     }
 }
 

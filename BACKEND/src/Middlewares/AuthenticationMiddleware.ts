@@ -3,7 +3,7 @@ import { Request, Response, NextFunction } from 'express';
 import { ErrorHandler } from '../Utils/customErrorHandler.js';
 
 // AUTHENTICATION MIDDLEWARE
-const AuthenticationMiddleware = (req: Request, res: Response, next: NextFunction) => {
+const AuthenticationMiddleware = async (req: Request, res: Response, next: NextFunction) => {
     try {
         // EXTRACT TOKEN FROM AUTHORIZATION HEADER
         const authHeader = req.headers.authorization;

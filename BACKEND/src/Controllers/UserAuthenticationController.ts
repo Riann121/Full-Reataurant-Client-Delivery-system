@@ -1,5 +1,5 @@
+
 import { Request, Response } from 'express';
-import colors from 'colors';
 import prisma from '../Config/prisma.js';
 import bcrypt from 'bcrypt';
 import verify_n_jwtProvide from '../Utils/verify-n-jwt.js';
@@ -8,8 +8,8 @@ import { ErrorHandler } from '../Utils/customErrorHandler.js';
 //REGISTRATION CONTROLLER
 const registrationController = async (req: Request, res: Response) => {
     try {
-        const {name, number, password, Role} = req.body
-        if (!name || !number || !password || !Role) {
+        const {name, number, password, role} = req.body
+        if (!name || !number || !password || !role) {
             return res.status(400).json({ message: 'All fields are required' });
         }
             //PASSWORD HASHING USING BCRYPT
@@ -28,7 +28,7 @@ const registrationController = async (req: Request, res: Response) => {
                                 name: name,
                                 number: number,
                                 passhash: hash,                         
-                                Role: Role                      
+                                role: role,                      
                             }
                         })
                         const {passhash, ...showUser} = newUser
