@@ -15,18 +15,6 @@ const ErrorHandler = (msg:string, err:Error,  res:Response, status:number)=>{
     })
 }
 
-// CUSTOM SUCCESS HANDLER FOR RESPONSES
-const SuccessHandler = (msg:string, res:Response, status:number)=>{
 
-    // LOG SUCCESS MESSAGE
-    console.log(colors.bgGreen(`SUCCESS [${status}]: ${msg}`));
 
-    // SEND SUCCESS RESPONSE
-    res.status(status).json({
-            status:status,
-            success:true,
-            message:msg
-    })              
-}
-
-export { ErrorHandler, SuccessHandler };
+export { ErrorHandler };
