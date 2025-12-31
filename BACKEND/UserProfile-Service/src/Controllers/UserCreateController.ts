@@ -2,7 +2,8 @@ import { Request, Response } from "express";
 import prisma from "../Config/prisma.js";
 import { ErrorHandler } from "../Utils/customErrorHandler.js";
 
-const CreateUserController = async (req:Request, res:Response) => {
+//USER CREATION CONTROLLER
+const createUserController = async (req:Request, res:Response) => {
     try {
         //VALIDATE REQUIRED FIELDS
         if(!req.body.name || !req.body.number || !req.body.passhash || !req.body.role){
@@ -10,6 +11,17 @@ const CreateUserController = async (req:Request, res:Response) => {
         }
 
         try {
+            try {
+                //CHECK IF USER ALREADY EXISTS
+                const exist = await prisma.client.findUnique({
+                    where: {
+                        number: req.body.number
+                    }
+                });
+            } catch (error) {
+                //HANDLE EXISTENCE CHECK ERROR
+                ErrorHandler('This Number is already registered', error as Error, res, 409);
+            }
             //CREATE NEW USER
             const user = await prisma.client.create({
             data: {
@@ -36,4 +48,4 @@ const CreateUserController = async (req:Request, res:Response) => {
     }
 }
 
-export default CreateUserController;
+export default createUserController;
