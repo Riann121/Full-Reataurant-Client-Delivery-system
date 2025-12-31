@@ -13,7 +13,7 @@ const UserGetController = async (req:Request, res:Response) => {
         //FIND USER BY NUMBER
         const user = await prisma.client.findUnique({
             where: {
-                number: req.params.id
+                id: req.params.id
             }
         });
         if (!user) {
@@ -23,7 +23,7 @@ const UserGetController = async (req:Request, res:Response) => {
         else {
             //EXCLUDE PASSHASH FROM RESPONSE
             const {passhash, ...showUser} = user;
-            
+
             //SEND USER DATA RESPONSE
             res.json({ showUser });
         }
