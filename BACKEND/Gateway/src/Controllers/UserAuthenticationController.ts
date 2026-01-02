@@ -1,6 +1,5 @@
 
 import { Request, Response } from 'express';
-import prisma from '../Config/prisma.js';
 import bcrypt from 'bcrypt';
 import verify_n_jwtProvide from '../Utils/verify-n-jwt.js';
 import { ErrorHandler } from '../Utils/customErrorHandler.js';
