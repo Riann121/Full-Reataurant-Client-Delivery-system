@@ -2,8 +2,9 @@ import {Request,Response} from 'express';
 import { ErrorHandler } from '../Utils/customErrorHandler.js';
 import prisma from '../Config/prisma.js';
 
-//USER GET CONTROLLER
-const UserGetController = async (req:Request, res:Response) => {
+
+//USER GET ALL CONTROLLER
+const UserGetAllController = async (req:Request, res:Response) => {
     try {
         const clientId = req.params.id;
         if(req.params.id === undefined){
@@ -11,10 +12,8 @@ const UserGetController = async (req:Request, res:Response) => {
             return ErrorHandler('Missing user', new Error('Client Id is required'), res, 400);
         }
         //FIND USER BY NUMBER
-        const user = await prisma.client.findUnique({
-            where: {
-                id: req.params.id
-            }
+        const user = await prisma.client.findMany({
+            where:{id: clientId}
         });
         if (!user) {
             //HANDLE USER NOT FOUND
@@ -22,7 +21,7 @@ const UserGetController = async (req:Request, res:Response) => {
         }
         else {
             //EXCLUDE PASSHASH FROM RESPONSE
-            const {passhash, ...showUser} = user;
+            const showUser = user.map(({passhash, ...rest}) => rest);
 
             //SEND USER DATA RESPONSE
             res.json({ showUser });
@@ -33,4 +32,4 @@ const UserGetController = async (req:Request, res:Response) => {
     }
 };
 
-export default UserGetController;
+export default UserGetAllController;
