@@ -11,7 +11,8 @@ const ErrorHandler = (msg:string, err:Error,  res:Response, status:number)=>{
     res.status(status).json({
             status:status,
             success:false,
-            message:msg
+            message:msg,
+            gatewayError: err,
     })
 }
 

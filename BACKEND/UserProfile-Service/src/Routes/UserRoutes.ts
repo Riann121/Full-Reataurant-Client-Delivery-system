@@ -22,4 +22,6 @@ clientRouter.patch('/update', UserUpdateController);
 
 //USER DELETE ROUTE
 clientRouter.delete('/delete/:id', UserDeleteController);
+
+
 export { clientRouter };
