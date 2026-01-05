@@ -11,10 +11,10 @@ const ErrorHandler = (msg:string, err:Error,  res:Response, status:number)=>{
     res.status(status).json({
             status:status,
             success:false,
-            data:{
+            info:{
                 service:"user-service",
                 message:msg,
-                gatewayError: err,
+                gatewayInfo: err,
             }
             
     })

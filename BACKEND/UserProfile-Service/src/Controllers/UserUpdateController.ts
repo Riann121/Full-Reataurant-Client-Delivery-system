@@ -1,7 +1,9 @@
 import { Request, Response } from "express";
 import { ErrorHandler } from "../Utils/customErrorHandler.js";
 import prisma from "../Config/prisma.js";
+import { SuccessHandler } from "../Utils/customSuccessHandler.js";
 
+//USER UPDATE CONTROLLER
 const UserUpdateController = async (req: Request, res: Response) => {
     try {
         //AUTHENTICATED USER PROFILE AND UPDATE DATA
@@ -25,7 +27,8 @@ const UserUpdateController = async (req: Request, res: Response) => {
             })
             //EXCLUDE PASSHASH FROM RESPONSE
             const {passhash, ...showUser} = updatedUser
-            res.status(200).json({ message: 'User updated successfully', showUser });
+            // SEND SUCCESS RESPONSE
+            SuccessHandler(showUser, res, 200, 'User updated successfully');
 
         } catch (error) {
             // HANDLE UPDATE FAILURE

@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { ErrorHandler } from '../Utils/customErrorHandler.js';
 import prisma from '../Config/prisma.js';
 import {ClientWhereInput } from '../../generated/prisma/models.js';
+import { SuccessHandler } from '../Utils/customSuccessHandler.js';
 
 //USER FIND CONTROLLER WHERE qtype CAN BE id, number, name
 const FindUserController = async (req: Request, res: Response) => {
@@ -30,13 +31,16 @@ const FindUserController = async (req: Request, res: Response) => {
                 where: query
             });
             if (user.length === 0) {
+                //HANDLE USER NOT FOUND
                 return ErrorHandler('User not found', new Error('No user matches the provided criteria'), res, 404);
             }
             //EXCLUDE PASSHASH FROM RESPONSE
             const showUser = user.map(({ passhash, ...rest }) => rest);
-            res.json({ showUser });
+            //SEND SUCCESS RESPONSE
+            SuccessHandler(showUser, res, 200, 'User found successfully');
 
     } catch (error) {
+        //HANDLE GENERAL ERROR
         ErrorHandler('Error retrieving User', error as Error, res, 500);
       }
         

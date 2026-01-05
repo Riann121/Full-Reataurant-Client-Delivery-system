@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import prisma from "../Config/prisma.js";
 import { ErrorHandler } from "../Utils/customErrorHandler.js";
+import { SuccessHandler } from "../Utils/customSuccessHandler.js";
 
 //USER CREATION CONTROLLER
 const createUserController = async (req:Request, res:Response) => {
@@ -35,7 +36,7 @@ const createUserController = async (req:Request, res:Response) => {
         //EXCLUDE PASSHASH FROM RESPONSE
         const {passhash, ...showUser} = user    
         
-        res.status(201).json({ message: 'User created successfully', showUser });
+        SuccessHandler(showUser, res, 201, 'User created successfully');
 
         } catch (error) {
             //HANDLE USER CREATION ERROR

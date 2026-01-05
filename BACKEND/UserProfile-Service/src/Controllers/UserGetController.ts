@@ -1,7 +1,7 @@
 import {Request,Response} from 'express';
 import { ErrorHandler } from '../Utils/customErrorHandler.js';
 import prisma from '../Config/prisma.js';
-
+import { SuccessHandler } from '../Utils/customSuccessHandler.js';
 
 //USER GET ALL CONTROLLER
 const UserGetAllController = async (req:Request, res:Response) => {
@@ -24,7 +24,7 @@ const UserGetAllController = async (req:Request, res:Response) => {
             const showUser = user.map(({passhash, ...rest}) => rest);
 
             //SEND USER DATA RESPONSE
-            res.json({ showUser });
+            SuccessHandler(showUser, res, 200, 'User retrieved successfully');
         }
     } catch (error) {
         //HANDLE GENERAL ERROR

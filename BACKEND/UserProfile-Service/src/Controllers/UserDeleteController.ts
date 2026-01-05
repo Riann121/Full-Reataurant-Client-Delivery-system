@@ -1,7 +1,7 @@
 import {Request,Response} from 'express';
 import { ErrorHandler } from '../Utils/customErrorHandler.js';
 import prisma from '../Config/prisma.js';
-
+import { SuccessHandler } from '../Utils/customSuccessHandler.js';
 
 //USER DELETE CONTROLLER
 const UserDeleteController = async (req:Request, res:Response) => {
@@ -22,7 +22,7 @@ const UserDeleteController = async (req:Request, res:Response) => {
             }
             if(user){
                 //SEND SUCCESS RESPONSE
-                res.status(204).json({ message: 'User deleted successfully'}); 
+                SuccessHandler({}, res, 200, 'User deleted successfully');
             }
         } catch (error) {
             ErrorHandler('Error deleting User try again', error as Error, res, 500);
