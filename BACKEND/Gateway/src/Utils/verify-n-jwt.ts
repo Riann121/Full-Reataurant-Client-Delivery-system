@@ -1,7 +1,6 @@
 import bcrypt from 'bcrypt';
 import { Response } from 'express';
 import jwt from 'jsonwebtoken';
-import colors from 'colors';
 import { PrismaClient } from '@prisma/client/extension';
 
 import 'dotenv/config';
@@ -12,18 +11,37 @@ const verify_n_jwtProvide = async(password:string, user:PrismaClient, res:Respon
     try {
         const result  = await bcrypt.compare(password, user.passhash);
             if (result) {
-                //PASSWORDS MATCHED
-                res.status(200).json({ message: 'Login successful' });
                 //GENERATE JWT TOKEN
                 const secretKey = process.env.JWT_SECRET;
+
+                //JWT PAYLOAD
+                const payload = {
+                    userId: user.id,
+                    role: user.role
+                }
+
                 if (!secretKey) {
                     return ErrorHandler('JWT secret key not found', new Error('Missing JWT secret'), res, 500);
                 }
-                //SIGNING THE TOKEN
-                const token = jwt.sign(
-                    { userId: user.id, role: user.role },
-                    secretKey, { expiresIn: '24h' });
 
+                //jwt SIGNATURE
+                const token = jwt.sign( payload,secretKey,{algorithm:'HS256', expiresIn: '24h' });
+                
+                //REFRESH TOKEN 
+                const refreshToken = crypto.randomUUID();
+
+                //STORE REFRESH TOKEN IN DB
+                //***WILL BE ADDED LATER***
+
+                //SET REFRESH TOKEN AS HTTP-ONLY COOKIE
+                res.cookie('refreshToken', refreshToken, {
+                    httpOnly: true,
+                    secure: true,
+                    sameSite: 'strict',
+                    maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+                });
+
+                //SEND RESPONSE WITH JWT TOKEN
                 res.status(200).json({ message: 'Login successful', token });
             
             } else {
