@@ -12,7 +12,7 @@ const ErrorHandler = (msg:string, err:Error,  res:Response, status:number)=>{
             status:status,
             success:false,
             info:{
-                service:"user-service",
+                service:"auth-service",
                 message:msg,
                 gatewayInfo: err,
             }

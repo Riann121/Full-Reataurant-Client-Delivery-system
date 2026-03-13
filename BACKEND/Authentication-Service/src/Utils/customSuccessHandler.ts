@@ -13,9 +13,9 @@ const SuccessHandler = (data:any, res:Response, status:number,msg:string)=>{
             success:true,
             data:data,
             info:{
-                service:"user-service",
+                service:"auth-service",
                 message:msg,
-                gatewayInfo:msg,//
+                gatewayInfo:msg,
             }
     })
 }
