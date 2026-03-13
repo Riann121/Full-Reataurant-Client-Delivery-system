@@ -6,7 +6,8 @@ import colors from "colors";
 const app: Express = express();
 const port = process.env.PORT || 8000;
 
-
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 
 // TEST ROUTE
