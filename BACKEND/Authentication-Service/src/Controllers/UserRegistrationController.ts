@@ -52,3 +52,5 @@ const UserRegistrationContorller = async (req:Request, res:Response) => {
         ErrorHandler('Error Registering user', error as Error, res, 401);
     }
 }
+
+export default UserRegistrationContorller
