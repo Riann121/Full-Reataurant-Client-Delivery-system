@@ -1,8 +1,8 @@
 import jwt from 'jsonwebtoken'
 import 'dotenv/config'
+import customUserData from '../Utils/customUserData'
 
-
-const SessionTokenProvidingService = (credentials) => {
+const SessionTokenProvidingService = (credentials:customUserData) => {
     //GENERATE JWT TOKEN
     const secretKey = process.env.JWT_SECRET!
 
@@ -12,12 +12,18 @@ const SessionTokenProvidingService = (credentials) => {
             secretKey, { expiresIn: '24h' }
         );  
         if(token){
-            return token;
+            return {
+                "stat":"success",
+                "token":token,
+            }
         }
     }
     else{
         return {
-            msg:"JWT token credentials or scretkey are not provided",
+            "stat":"fail",
+            "msg":"Error in generating Session Token",
         }
     }
 }
+
+export default SessionTokenProvidingService 

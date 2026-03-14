@@ -13,12 +13,17 @@ const RefreshTokenProvidingService = ()=> {
             secretKey, { expiresIn: '24h' }
         );  
         if(token){
-            return token;
+            return {
+                "stat":"success",
+                "token":token,
+            }
         }
     }
     else{
         return {
-            msg:"Error in generating Refresh Token",
+            "stat":"fail",
+            "msg":"Error in generating Refresh Token",
         }
     }
 }
+export default RefreshTokenProvidingService

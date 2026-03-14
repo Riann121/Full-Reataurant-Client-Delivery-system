@@ -1,8 +1,10 @@
-type customUserData= {
-                name: string,
-                number: string,
-                passhash: any,
-                role: any,
-            }
-
+type customUserData=  {
+    number: string;
+    id: string;
+    name: string;
+    passhash: string;
+    role: any;
+    restaurantIds: string[];
+    orderIds: string[];
+}
 export default customUserData;
