@@ -1,6 +1,8 @@
 import express, { Express,Request,Response } from "express";
 import colors from 'colors'
 import 'dotenv/config'
+import userAuthRouter from "./Routes/UserAuthroutes";
+
 
 const app:Express = express()
 const PORT = process.env.PORT || 3003;
@@ -10,8 +12,8 @@ const address = process.env.AUTH_SERVICE_URL;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// USER CREATION ROUTE 
-app.use(`${address}/user`, clientRouter);
+// USER AUTHENTICATION ROUTE 
+app.use(`${address}/user`, userAuthRouter);
 
 // TEST ROUTE
 app.get('/test', (req:Request, res:Response) => {
