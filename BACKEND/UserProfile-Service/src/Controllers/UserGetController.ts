@@ -4,14 +4,14 @@ import prisma from '../Config/prisma.js';
 import { SuccessHandler } from '../Utils/customSuccessHandler.js';
 
 //USER GET ALL CONTROLLER
-const UserGetAllController = async (req:Request, res:Response) => {
+const UserGetController = async (req:Request, res:Response) => {
     try {
         const clientId = req.params.id;
         if(req.params.id === undefined){
-            //HANDLE MISSING NUMBER PARAMETER
+            //HANDLE MISSING ID PARAMETER
             return ErrorHandler('Missing user', new Error('Client Id is required'), res, 400);
         }
-        //FIND USER BY NUMBER
+        //FIND USER BY ClientId
         const user = await prisma.client.findMany({
             where:{id: clientId}
         });
@@ -32,4 +32,4 @@ const UserGetAllController = async (req:Request, res:Response) => {
     }
 };
 
-export default UserGetAllController;
+export default UserGetController;
