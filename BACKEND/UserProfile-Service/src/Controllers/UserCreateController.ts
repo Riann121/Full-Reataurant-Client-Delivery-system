@@ -36,7 +36,7 @@ const createUserController = async (req:Request, res:Response) => {
         //EXCLUDE PASSHASH FROM RESPONSE
         const {passhash, ...showUser} = user    
         
-        SuccessHandler(showUser, res, 201, 'User created successfully');
+        return SuccessHandler(showUser, res, 201, 'User created successfully');
 
         } catch (error) {
             //HANDLE USER CREATION ERROR

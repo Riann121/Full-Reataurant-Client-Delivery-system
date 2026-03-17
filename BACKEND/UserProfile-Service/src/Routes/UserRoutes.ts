@@ -19,7 +19,7 @@ clientRouter.get('/:id', UserGetController);
 clientRouter.get('/find/:value/:qtype', FindUserController);
 
 //USER GET AUTH ROUTE
-clientRouter.get('/:number',UserGetAuthInfoController)
+clientRouter.get('auth/:number',UserGetAuthInfoController)
 
 //USER UPDATE ROUTE
 clientRouter.patch('/update', UserUpdateController);

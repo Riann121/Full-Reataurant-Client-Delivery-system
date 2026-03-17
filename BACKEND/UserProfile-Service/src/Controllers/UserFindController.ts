@@ -37,7 +37,7 @@ const FindUserController = async (req: Request, res: Response) => {
             //EXCLUDE PASSHASH FROM RESPONSE
             const showUser = user.map(({ passhash, ...rest }) => rest);
             //SEND SUCCESS RESPONSE
-            SuccessHandler(showUser, res, 200, 'User found successfully');
+            return SuccessHandler(showUser, res, 200, 'User found successfully');
 
     } catch (error) {
         //HANDLE GENERAL ERROR

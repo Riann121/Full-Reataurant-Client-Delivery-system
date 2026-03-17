@@ -22,7 +22,7 @@ const UserDeleteController = async (req:Request, res:Response) => {
             }
             if(user){
                 //SEND SUCCESS RESPONSE
-                SuccessHandler({}, res, 200, 'User deleted successfully');
+                return SuccessHandler({}, res, 200, 'User deleted successfully');
             }
         } catch (error) {
             ErrorHandler('Error deleting User try again', error as Error, res, 500);

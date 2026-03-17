@@ -16,8 +16,8 @@ const UserUpdateController = async (req: Request, res: Response) => {
         }
         if(!updatedData){
             //HANDLE MISSING UPDATE DATA
-            ErrorHandler('No update data provided', new Error('Update data is required'), res, 400);
-            return;
+            return ErrorHandler('No update data provided', new Error('Update data is required'), res, 400);
+            
         }
         try {
             //UPDATE USER DATA IN DATABASE
@@ -28,7 +28,7 @@ const UserUpdateController = async (req: Request, res: Response) => {
             //EXCLUDE PASSHASH FROM RESPONSE
             const {passhash, ...showUser} = updatedUser
             // SEND SUCCESS RESPONSE
-            SuccessHandler(showUser, res, 200, 'User updated successfully');
+            return SuccessHandler(showUser, res, 200, 'User updated successfully');
 
         } catch (error) {
             // HANDLE UPDATE FAILURE

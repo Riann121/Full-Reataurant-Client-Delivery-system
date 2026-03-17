@@ -22,11 +22,11 @@ const UserGetAuthInfoController = async (req:Request, res:Response) => {
         });
         if (!user) {
             //HANDLE USER NOT FOUND
-            ErrorHandler('User not found', new Error('No Client with the provided number'), res, 404);
+            return ErrorHandler('User not found', new Error('No Client with the provided number'), res, 404);
         }
         else {
             //SEND USER DATA RESPONSE
-            SuccessHandler(user, res, 200, 'User retrieved successfully');
+            return SuccessHandler(user, res, 200, 'User retrieved successfully');
         }
     } catch (error) {
         //HANDLE GENERAL ERROR
