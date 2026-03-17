@@ -11,6 +11,11 @@ const UserGetAuthInfoController = async (req:Request, res:Response) => {
             //HANDLE MISSING NUMBER PARAMETER
             return ErrorHandler('Missing number', new Error('Phone Number is required'), res, 400);
         }
+        if(!req.body.isFromAuth){
+            //HANDLE MISSING  AUTHORIZATION TOKEN
+            return ErrorHandler('Missing Authorization token', new Error('Unauthorized request'), res, 400);
+        }
+
         //FIND USER BY ClientId
         const user = await prisma.client.findMany({
             where:{number: clientNumber}

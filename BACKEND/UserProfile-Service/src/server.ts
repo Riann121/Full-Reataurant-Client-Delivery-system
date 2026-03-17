@@ -4,8 +4,8 @@ import colors from 'colors';
 import { clientRouter } from './Routes/UserRoutes.js';
 
 const app:Express = express();
-const PORT = process.env.PORT || 3000;
-const address = "/api/v1";
+const PORT = process.env.USER_PORT || 3001;
+const address = process.env.USER_SERVICE_URL;
 
 // MIDDLEWARES
 app.use(express.json());
