@@ -23,7 +23,7 @@ const RestaurantCreateController = async (req:Request, res:Response) => {
             data: {
                 name,
                 address,
-                owner:user_id,
+                owner: [user_id],
             }
             });
 

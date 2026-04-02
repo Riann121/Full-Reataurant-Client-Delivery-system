@@ -13,7 +13,7 @@ const SuccessHandler = (data:any, res:Response, status:number,msg:string)=>{
             success:true,
             data:data,
             info:{
-                service:"user-service",
+                service:"restaurant-service",
                 message:msg,
                 gatewayInfo:msg,//
             }
