@@ -16,6 +16,7 @@ model Restaurant{
   id String @id @default(uuid())
   name String
   address String
+  owner String[]
   member String[]
   food String[]
 }
