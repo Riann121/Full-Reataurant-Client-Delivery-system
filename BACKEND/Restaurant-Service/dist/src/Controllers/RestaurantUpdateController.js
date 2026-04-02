@@ -1,0 +1,51 @@
+import { ErrorHandler } from "../Utils/customErrorHandler.js";
+import { SuccessHandler } from "../Utils/customSuccessHandler.js";
+import { prisma } from "../Config/prisma.js";
+const RestaurantUpdateController = async (req, res) => {
+    try {
+        const restaurantId = req.params.id;
+        const auth = req.body.auth;
+        const { name, address, member, food } = req.body;
+        if (!restaurantId) {
+            return ErrorHandler("Missing restaurant", new Error("Restaurant Id is required"), res, 400);
+        }
+        if (!auth || !auth.userId || !auth.role) {
+            return ErrorHandler("Unauthorized", new Error("User authentication required"), res, 401);
+        }
+        const userId = auth.userId;
+        const role = auth.role;
+        // Only OWNER role can update (and they must be one of the owners of the restaurant)
+        if (role === "OWNER") {
+            // Check if the restaurant exists and user is one of the owners
+            const existingRestaurant = await prisma.restaurant.findUnique({
+                where: { id: restaurantId },
+            });
+            if (!existingRestaurant) {
+                return ErrorHandler("Restaurant not found", new Error("No Restaurant with the provided Id"), res, 404);
+            }
+            // Check if the user is in the owner array
+            if (!existingRestaurant.owner.includes(userId)) {
+                return ErrorHandler("Forbidden", new Error("You are not the owner of this restaurant"), res, 403);
+            }
+            const updatedRestaurant = await prisma.restaurant.update({
+                where: {
+                    id: restaurantId,
+                },
+                data: {
+                    name: name || existingRestaurant.name,
+                    address: address || existingRestaurant.address,
+                    member: member || existingRestaurant.member,
+                    food: food || existingRestaurant.food,
+                },
+            });
+            return SuccessHandler(updatedRestaurant, res, 200, "Restaurant updated successfully");
+        }
+        else {
+            return ErrorHandler("Forbidden", new Error("Only restaurant owners can update their restaurants"), res, 403);
+        }
+    }
+    catch (error) {
+        return ErrorHandler("Error updating restaurant", error, res, 500);
+    }
+};
+export default RestaurantUpdateController;

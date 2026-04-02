@@ -1,13 +1,13 @@
 import { Response, Request } from "express";
 import { ErrorHandler } from "../Utils/customErrorHandler.js";
 import { SuccessHandler } from "../Utils/customSuccessHandler.js";
-import prisma from "../Config/prisma.js";
+import { prisma } from "../Config/prisma.js";
 
 const RestaurantDeleteController = async (req:Request, res:Response) => {
     try {
-        const restaurantId = req.params.id;
-        const userId = req.body.auth.userId;
-        const role = req.body.auth.role;
+        const restaurantId = req.params.id as string;
+        const userId = req.body.auth.userId as string;
+        const role = req.body.auth.role as string;
 
         //VALIDATE REQUIRED FIELDS
         if(!restaurantId){
@@ -28,13 +28,13 @@ const RestaurantDeleteController = async (req:Request, res:Response) => {
             }
 
             // Check if the user is in the owner array
-            if (!existingRestaurant.owner.includes(userId)) {
-                return ErrorHandler('Forbidden', new Error('You are not the owner of this restaurant'), res, 403);
-            }
+                if (!existingRestaurant.owner.includes(userId)) {
+                    return ErrorHandler('Forbidden', new Error('You are not the owner of this restaurant'), res, 403);
+                }
 
             // Delete the restaurant
             await prisma.restaurant.delete({
-                where: { id: restaurantId }
+                where: { id:restaurantId }
             });
 
             return SuccessHandler({}, res, 200, 'Restaurant deleted successfully');
