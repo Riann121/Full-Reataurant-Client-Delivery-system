@@ -3,15 +3,16 @@ import { ErrorHandler } from "../Utils/customErrorHandler";
 import axios from "axios";
 import SessionTokenProvidingService from "../Service/JwtSessionTokenService";
 import RefreshTokenProvidingService from "../Service/JwtRefreshTokenService";
+import bcrypt from "bcrypt"
 
 const UserRegistrationContorller = async (req: Request, res: Response) => {
     try {
 
         // VALIDATE REQUIRED FIELDS
-        if (!req.body.name || !req.body.number || !req.body.passhash || !req.body.role) {
+        if (!req.body.name || !req.body.number || !req.body.password || !req.body.role) {
             return ErrorHandler(
                 'Missing required fields',
-                new Error('Name, number, passhash, and role are required'),
+                new Error('Name, number, password, and role are required'),
                 res,
                 400
             );
@@ -22,11 +23,17 @@ const UserRegistrationContorller = async (req: Request, res: Response) => {
         const port = process.env.USER_PORT
         const userMakeUrl = `${user_url}:${port}/create`
 
+        //CONVERTING PASSWORD INTO HASH
+        const password = req.body.password
+        const saltround = 10
+        const salt = await bcrypt.genSalt(saltround)
+        const passhash = await bcrypt.hash(password,salt)
+
         // DATA SENT TO USER SERVICE
         const data = {
             name: req.body.name,
             number: req.body.number,
-            passhash: req.body.passhash,
+            passhash: passhash,
             role: req.body.role
         }
 
@@ -52,7 +59,7 @@ const UserRegistrationContorller = async (req: Request, res: Response) => {
 
             // CHECK TOKEN GENERATION FAILURE
             if (sessionToken?.stat === "fail" || refreshToken?.stat === "fail") {
-                ErrorHandler(
+                return ErrorHandler(
                     "Error in generating session or refresh token",
                     Error("authenticaton fail"),
                     res,
@@ -61,7 +68,7 @@ const UserRegistrationContorller = async (req: Request, res: Response) => {
             }
 
             // STORE REFRESH TOKEN IN HTTPONLY COOKIE
-            res.cookie('refreshtoken', refreshToken, {
+            return res.cookie('refreshtoken', refreshToken, {
                 httpOnly: true,
                 sameSite: "strict",
                 secure: true,

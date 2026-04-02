@@ -1,11 +1,11 @@
 import express, { Express,Request,Response } from "express";
 import colors from 'colors'
 import 'dotenv/config'
-import userAuthRouter from "./Routes/UserAuthroutes";
+import userAuthRouter from "./Routes/UserAuthRoutes";
 
 
 const app:Express = express()
-const PORT = process.env.PORT || 3003;
+const PORT = process.env.AUTH_PORT || 3003;
 const address = process.env.AUTH_SERVICE_URL;
 
 // MIDDLEWARES
