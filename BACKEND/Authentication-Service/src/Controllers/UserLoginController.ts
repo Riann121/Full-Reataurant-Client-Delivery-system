@@ -6,6 +6,7 @@ import "dotenv/config"
 import UserVerification from "../Service/UserVerificationService";
 import SessionTokenProvidingService from "../Service/JwtSessionTokenService";
 import RefreshTokenProvidingService from "../Service/JwtRefreshTokenService";
+import { TokenServiceResponse } from "../Utils/tokenServiceResponse";
 
 const UserLoginController = async (req:Request, res:Response)=>{
     try {
@@ -41,12 +42,33 @@ const UserLoginController = async (req:Request, res:Response)=>{
         const verify = await UserVerification(passhash, password)
 
         if(verify){
-            // GENERATE SESSION AND REFRESH TOKENS
-            const sessionToken = SessionTokenProvidingService(userData)
-            const refreshToken = RefreshTokenProvidingService()
+            let sessionToken: TokenServiceResponse;
+            let refreshToken: TokenServiceResponse;
+
+            try {
+                sessionToken = SessionTokenProvidingService(userData);
+            } catch (tokenError) {
+                return ErrorHandler(
+                    "Error generating session token",
+                    tokenError as Error,
+                    res,
+                    500
+                );
+            }
+
+            try {
+                refreshToken = RefreshTokenProvidingService();
+            } catch (refreshError) {
+                return ErrorHandler(
+                    "Error generating refresh token",
+                    refreshError as Error,
+                    res,
+                    500
+                );
+            }
 
             // CHECK TOKEN GENERATION FAILURE
-            if (sessionToken?.stat === "fail" || refreshToken?.stat === "fail") {
+            if (sessionToken.stat === "fail" || refreshToken.stat === "fail") {
                 return ErrorHandler(
                     "Error generating session or refresh token",
                     new Error("Authentication fail"),
@@ -56,12 +78,12 @@ const UserLoginController = async (req:Request, res:Response)=>{
             }
 
             // STORE REFRESH TOKEN IN HTTPONLY COOKIE AND SEND SESSION TOKEN
-            return res.cookie('refreshtoken', refreshToken, {
+            return res.cookie('refreshtoken', refreshToken.token, {
                 httpOnly: true,
                 sameSite: "strict",
                 secure: true,
                 maxAge: 7 * 24 * 60 * 60 * 1000
-            }).json({ sessionToken })
+            }).json({ sessionToken: sessionToken.token })
 
         } else {
             // WRONG PASSWORD

@@ -1,16 +1,16 @@
 import jwt from 'jsonwebtoken'
 import 'dotenv/config'
 import customUserData from '../Utils/customUserData'
+import { TokenServiceResponse } from '../Utils/tokenServiceResponse'
 
-const SessionTokenProvidingService = (credentials:customUserData) => {
-    //GENERATE JWT TOKEN
-    const secretKey = process.env.JWT_SECRET!
+const SessionTokenProvidingService = (credentials:customUserData): TokenServiceResponse => {
+    const secretKey = process.env.JWT_SECRET
 
     if(credentials && secretKey){
         const token = jwt.sign(
             { userId: credentials.id, role: credentials.role },
             secretKey, { expiresIn: '24h' }
-        );  
+        );
         if(token){
             return {
                 "stat":"success",
@@ -18,11 +18,9 @@ const SessionTokenProvidingService = (credentials:customUserData) => {
             }
         }
     }
-    else{
-        return {
-            "stat":"fail",
-            "msg":"Error in generating Session Token",
-        }
+    return {
+        "stat":"fail",
+        "msg":"Error in generating Session Token",
     }
 }
 

@@ -3,9 +3,10 @@ import { ErrorHandler } from "../Utils/customErrorHandler";
 import axios from "axios";
 import SessionTokenProvidingService from "../Service/JwtSessionTokenService";
 import RefreshTokenProvidingService from "../Service/JwtRefreshTokenService";
+import { TokenServiceResponse } from "../Utils/tokenServiceResponse";
 import bcrypt from "bcrypt"
 
-const UserRegistrationContorller = async (req: Request, res: Response) => {
+const UserRegistrationController = async (req: Request, res: Response) => {
     try {
 
         // VALIDATE REQUIRED FIELDS
@@ -51,24 +52,43 @@ const UserRegistrationContorller = async (req: Request, res: Response) => {
             const userCreate = axios_res.data
             const userData = axios_res.data.data
 
-            // GENERATE ACCESS TOKEN (SESSION TOKEN)
-            const sessionToken = SessionTokenProvidingService(userData)
+            let sessionToken: TokenServiceResponse;
+            let refreshToken: TokenServiceResponse;
 
-            // GENERATE REFRESH TOKEN
-            const refreshToken = RefreshTokenProvidingService()
+            try {
+                sessionToken = SessionTokenProvidingService(userData);
+            } catch (tokenError) {
+                return ErrorHandler(
+                    "Error generating session token",
+                    tokenError as Error,
+                    res,
+                    500
+                );
+            }
+
+            try {
+                refreshToken = RefreshTokenProvidingService();
+            } catch (refreshError) {
+                return ErrorHandler(
+                    "Error generating refresh token",
+                    refreshError as Error,
+                    res,
+                    500
+                );
+            }
 
             // CHECK TOKEN GENERATION FAILURE
-            if (sessionToken?.stat === "fail" || refreshToken?.stat === "fail") {
+            if (sessionToken.stat === "fail" || refreshToken.stat === "fail") {
                 return ErrorHandler(
                     "Error in generating session or refresh token",
-                    Error("authenticaton fail"),
+                    new Error("authentication fail"),
                     res,
                     500
                 )
             }
 
             // STORE REFRESH TOKEN IN HTTPONLY COOKIE
-            return res.cookie('refreshtoken', refreshToken, {
+            return res.cookie('refreshtoken', refreshToken.token, {
                 httpOnly: true,
                 sameSite: "strict",
                 secure: true,
@@ -76,7 +96,7 @@ const UserRegistrationContorller = async (req: Request, res: Response) => {
             })
 
             // SEND SESSION TOKEN TO CLIENT
-            .json({ 'sessionToken': sessionToken })
+            .json({ 'sessionToken': sessionToken.token })
         }
 
     } catch (error) {
@@ -91,4 +111,4 @@ const UserRegistrationContorller = async (req: Request, res: Response) => {
     }
 }
 
-export default UserRegistrationContorller
+export default UserRegistrationController
